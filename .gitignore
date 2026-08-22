@@ -1,0 +1,28 @@
+# Generated data/model artifacts — reproducible by running the pipeline
+# (python build_real_plz_geojson.py && python data_generator.py && python ml_engine.py).
+# Keeping these out of git avoids committing large regenerable binaries
+# (the trained RandomForest pipeline alone is 40MB+).
+data/raw/
+data/processed/
+data/models/
+
+# Real data you supply locally — not something to accidentally commit/share.
+data/external/real/*.csv
+
+# Keep the vendored real-PLZ source and its provenance doc, and the
+# real/README.md placeholder — these are small and are the actual source of
+# truth for reproducibility.
+!data/external/real/README.md
+!data/external/berlin_plz_source/
+
+# bezirk_emissions.csv is NOT a large external download you supply locally —
+# it's 12 rows we authored ourselves from a real, cited source (see
+# BEZIRK_EMISSIONS_PROVENANCE.md), so unlike trees_raw.csv/plz_einwohner.csv
+# it should ship with the repo rather than be excluded by the *.csv rule
+# above.
+!data/external/real/bezirk_emissions.csv
+
+.venv/
+__pycache__/
+*.pyc
+*.log
