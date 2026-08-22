@@ -90,9 +90,12 @@ METADATA_PATH = MODELS_DIR / "model_metadata.joblib"
 # ---------------------------------------------------------------------------
 
 def _missing_artifacts() -> list[str]:
+    # RAW_TREES_CSV/RAW_PLZ_GEOJSON are pipeline *inputs* (data_generator.py
+    # stages them, ml_engine.py reads them to build the processed outputs
+    # below) — nothing in app.py itself reads them at runtime. Gating on
+    # their presence used to make the deployed app require files it never
+    # actually opens; the four files below are the only ones it reads.
     required = [
-        RAW_TREES_CSV,
-        RAW_PLZ_GEOJSON,
         PLZ_FEATURES_GEOJSON,
         TREES_ENRICHED_PARQUET,
         KMEANS_PIPELINE_PATH,

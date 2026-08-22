@@ -1,10 +1,30 @@
 # Generated data/model artifacts — reproducible by running the pipeline
 # (python build_real_plz_geojson.py && python data_generator.py && python ml_engine.py).
-# Keeping these out of git avoids committing large regenerable binaries
-# (the trained RandomForest pipeline alone is 40MB+).
+#
+# data/raw/ is fully ignored: those are pipeline *inputs* (up to ~230MB of
+# raw tree exports) that app.py never reads directly — only ml_engine.py
+# does, at build time.
 data/raw/
-data/processed/
-data/models/
+
+# data/processed/ and data/models/ are different: app.py reads these four
+# files directly, at runtime, every time it starts. Streamlit Community
+# Cloud only pip-installs requirements.txt and runs `streamlit run app.py`
+# — it never runs the pipeline scripts — so without these committed, the
+# deployed app has nothing to load and either crashes or (worse) silently
+# falls back to whatever stale version happens to already be tracked in
+# git history. (That's exactly what happened before this comment existed:
+# a ~30-row synthetic-grid plz_features.geojson from months ago, predating
+# the "bezirk" column entirely, was still tracked and got deployed instead
+# of the real 193-area version.) So: ignore everything else generated in
+# these two folders (large regenerable intermediates, old model files),
+# but explicitly keep the small set the app actually loads.
+data/processed/*
+!data/processed/plz_features.geojson
+!data/processed/trees_enriched.parquet
+
+data/models/*
+!data/models/kmeans_plz_pipeline.joblib
+!data/models/model_metadata.joblib
 
 # Real data you supply locally — not something to accidentally commit/share.
 data/external/real/*.csv
